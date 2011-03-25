@@ -11,8 +11,6 @@
 #ifndef _NETWORKOP_H_
 #define _NETWORKOP_H_
 
-void UpdateCheck();
-bool DownloadUpdate();
 void StartNetworkThread();
 bool InitializeNetwork(bool silent);
 bool ConnectShare (bool silent);

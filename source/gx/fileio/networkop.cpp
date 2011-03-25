@@ -12,15 +12,18 @@
 #include <malloc.h>
 #include <ogc/lwp_watchdog.h>
 #include <smb.h>
-#include <mxml.h>
+//#include <mxml.h>
 
-#include "vbagx.h"
-#include "menu.h"
-#include "fileop.h"
-#include "filebrowser.h"
-#include "utils/http.h"
-#include "utils/unzip/unzip.h"
-#include "utils/unzip/miniunz.h"
+#include <gccore.h>
+#include <stdio.h>
+#include <string.h>
+#include <ogcsys.h>
+#include <fat.h>
+#include <unistd.h>
+#include <errno.h>
+
+#include "gx_video.h"
+#include "gui.h"
 
 static bool networkInit = false;
 static bool networkShareInit = false;
@@ -32,140 +35,7 @@ static bool updateChecked = false; // true if checked for app update
 static char updateURL[128]; // URL of app update
 bool updateFound = false; // true if an app update was found
 
-/****************************************************************************
- * UpdateCheck
- * Checks for an update for the application
- ***************************************************************************/
-
-void UpdateCheck()
-{
-	// we only check for an update if we have internet + SD/USB
-	if(updateChecked || !networkInit)
-		return;
-
-	if(!isMounted[DEVICE_SD] && !isMounted[DEVICE_USB])
-		return;
-
-	updateChecked = true;
-	u8 tmpbuffer[256];
-
-	if (http_request("http://vba-wii.googlecode.com/svn/trunk/update.xml", NULL, tmpbuffer, 256, SILENT) <= 0)
-		return;
-
-	mxml_node_t *xml;
-	mxml_node_t *item;
-
-	xml = mxmlLoadString(NULL, (char *)tmpbuffer, MXML_TEXT_CALLBACK);
-
-	if(!xml)
-		return;
-
-	// check settings version
-	item = mxmlFindElement(xml, xml, "app", "version", NULL, MXML_DESCEND);
-	if(item) // a version entry exists
-	{
-		const char * version = mxmlElementGetAttr(item, "version");
-
-		if(version && strlen(version) == 5)
-		{
-			int verMajor = version[0] - '0';
-			int verMinor = version[2] - '0';
-			int verPoint = version[4] - '0';
-			int curMajor = APPVERSION[0] - '0';
-			int curMinor = APPVERSION[2] - '0';
-			int curPoint = APPVERSION[4] - '0';
-
-			// check that the versioning is valid and is a newer version
-			if((verMajor >= 0 && verMajor <= 9 &&
-				verMinor >= 0 && verMinor <= 9 &&
-				verPoint >= 0 && verPoint <= 9) &&
-				(verMajor > curMajor ||
-				(verMajor == curMajor && verMinor > curMinor) ||
-				(verMajor == curMajor && verMinor == curMinor && verPoint > curPoint)))
-			{
-				item = mxmlFindElement(xml, xml, "file", NULL, NULL, MXML_DESCEND);
-				if(item)
-				{
-					const char * tmp = mxmlElementGetAttr(item, "url");
-					if(tmp)
-					{
-						snprintf(updateURL, 128, "%s", tmp);
-						updateFound = true;
-					}
-				}
-			}
-		}
-	}
-	mxmlDelete(xml);
-}
-
-static bool unzipArchive(char * zipfilepath, char * unzipfolderpath)
-{
-	unzFile uf = unzOpen(zipfilepath);
-	if (uf==NULL)
-		return false;
-
-	if(chdir(unzipfolderpath)) // can't access dir
-	{
-		makedir(unzipfolderpath); // attempt to make dir
-		if(chdir(unzipfolderpath)) // still can't access dir
-			return false;
-	}
-
-	extractZip(uf,0,1,0);
-
-	unzCloseCurrentFile(uf);
-	return true;
-}
-
-bool DownloadUpdate()
-{
-	bool result = false;
-
-	if(updateURL[0] == 0 || appPath[0] == 0 || !ChangeInterface(appPath, NOTSILENT))
-	{
-		ErrorPrompt("Update failed!");
-		updateFound = false; // updating is finished (successful or not!)
-		return false;
-	}
-
-	// stop checking if devices were removed/inserted
-	// since we're saving a file
-	HaltDeviceThread();
-
-	int device;
-	FindDevice(appPath, &device);
-
-	char updateFile[50];
-	sprintf(updateFile, "%s%s Update.zip", pathPrefix[device], APPNAME);
-
-	FILE * hfile = fopen (updateFile, "wb");
-
-	if (hfile)
-	{
-		if(http_request(updateURL, hfile, NULL, (1024*1024*10), NOTSILENT) > 0)
-		{
-			fclose (hfile);
-			result = unzipArchive(updateFile, (char *)pathPrefix[device]);
-		}
-		else
-		{
-			fclose (hfile);
-		}
-		remove(updateFile); // delete update file
-	}
-
-	// go back to checking if devices were inserted/removed
-	ResumeDeviceThread();
-
-	if(result)
-		InfoPrompt("Update successful!");
-	else
-		ErrorPrompt("Update failed!");
-
-	updateFound = false; // updating is finished (successful or not!)
-	return result;
-}
+bool isSmbMounted = false;
 
 /****************************************************************************
  * InitializeNetwork
@@ -304,7 +174,7 @@ bool InitializeNetwork(bool silent)
 
 	while(retry)
 	{
-		ShowAction("Initializing network...");
+		GUI_MsgBoxOpen("Network", "Initializing network...", true);
 
 #ifdef HW_RVL
 		u64 start = gettime();
@@ -321,12 +191,12 @@ bool InitializeNetwork(bool silent)
 		networkInit = !(if_config(wiiIP, NULL, NULL, true) < 0);
 #endif
 
-		CancelAction();
+		GUI_MsgBoxClose();
 
 		if(networkInit || silent)
 			break;
 
-		retry = ErrorPromptRetry("Unable to initialize network!");
+		retry = true; GUI_WaitPrompt("Error", "Unable to initialize network!");  // TODO: allow the user to retry
 		
 #ifdef HW_RVL  	
 		if(networkInit && net_gethostip() > 0)
@@ -343,7 +213,7 @@ void CloseShare()
 	if(networkShareInit)
 		smbClose("smb");
 	networkShareInit = false;
-	isMounted[DEVICE_SMB] = false;
+	isSmbMounted = false;
 }
 
 /****************************************************************************
@@ -360,8 +230,8 @@ ConnectShare (bool silent)
 		return true;
 
 	int retry = 1;
-	int chkS = (strlen(GCSettings.smbshare) > 0) ? 0:1;
-	int chkI = (strlen(GCSettings.smbip) > 0) ? 0:1;
+	int chkS = (strlen("smbshare") > 0) ? 0:1;  // FIXME: make this configurable
+	int chkI = (strlen("192.168.1.42") > 0) ? 0:1;  // FIXME
 
 	// check that all parameters have been set
 	if(chkS + chkI > 0)
@@ -378,7 +248,7 @@ ConnectShare (bool silent)
 				sprintf(msg, "Share IP is blank.");
 
 			sprintf(msg2, "Invalid network settings - %s", msg);
-			ErrorPrompt(msg2);
+			GUI_WaitPrompt("Error", msg2);
 		}
 		return false;
 	}
@@ -386,19 +256,19 @@ ConnectShare (bool silent)
 	while(retry)
 	{
 		if(!silent)
-			ShowAction ("Connecting to network share...");
+			GUI_MsgBoxOpen("Network", "Connecting to network share...", true);
 		
-		if(smbInit(GCSettings.smbuser, GCSettings.smbpwd, GCSettings.smbshare, GCSettings.smbip))
+		if(smbInit("smbuser", "smbpwd", "smbshare", "192.168.1.42"))  // TODO: allow the user to configure these settings
 			networkShareInit = true;
 
 		if(networkShareInit || silent)
 			break;
 
-		retry = ErrorPromptRetry("Failed to connect to network share.");
+		retry = true; GUI_WaitPrompt("Error", "Failed to connect to network share.");  // TODO: allow the user to retry
 	}
 
 	if(!silent)
-		CancelAction();
+		;//GUI();  // FIXME: call the GUI loop I guess
 
 	return networkShareInit;
 }
