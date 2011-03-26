@@ -193,7 +193,7 @@ bool InitializeNetwork(bool silent)
 		if(networkInit || silent)
 			break;
 
-		retry = true; GUI_WaitPrompt("Error", "Unable to initialize network!");  // TODO: allow the user to retry
+		retry = false; GUI_WaitPrompt("Error", "Unable to initialize network!");  // TODO: allow the user to retry
 		
 #ifdef HW_RVL  	
 		if(networkInit && net_gethostip() > 0)
@@ -261,7 +261,7 @@ ConnectShare (bool silent)
 		if(networkShareInit || silent)
 			break;
 
-		retry = true; GUI_WaitPrompt("Error", "Failed to connect to network share.");  // TODO: allow the user to retry
+		retry = false; GUI_WaitPrompt("Error", "Failed to connect to network share.");  // TODO: allow the user to retry
 	}
 
 	if(!silent)
