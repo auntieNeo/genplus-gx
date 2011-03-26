@@ -63,6 +63,7 @@ extern const u8 Load_sd_png[];
 extern const u8 Load_dvd_png[];
 #ifdef HW_RVL
 extern const u8 Load_usb_png[];
+extern const u8 Load_smb_png[];
 #endif
 
 /* Save Manager menu */
@@ -286,13 +287,14 @@ static gui_item items_ctrls[13] =
 };
 
 /* Load menu */
-static gui_item items_load[4] =
+static gui_item items_load[5] =
 {
 #ifdef HW_RVL
-  {NULL,Load_recent_png,"","Load recent ROM files"          ,276,120,88,96},
-  {NULL,Load_sd_png    ,"","Load ROM files from SD card"    ,110,266,88,96},
-  {NULL,Load_usb_png   ,"","Load ROM files from USB drive"  ,276,266,88,96},
-  {NULL,Load_dvd_png   ,"","Load ROM files from DVD"        ,442,266,88,96}
+  {NULL,Load_recent_png,"","Load recent ROM files"          ,111,138,88,96},
+  {NULL,Load_sd_png    ,"","Load ROM files from SD card"    ,275,138,88,96},
+  {NULL,Load_usb_png   ,"","Load ROM files from USB drive"  ,441,138,88,96},
+  {NULL,Load_dvd_png   ,"","Load ROM files from DVD"        ,192,282,88,96},
+  {NULL,Load_smb_png   ,"","Load ROM files from SMB"        ,360,282,88,96}
 #else
   {NULL,Load_recent_png,"","Load recent ROM files (USB/SD)" ,110,192,88,96},
   {NULL,Load_sd_png    ,"","Load ROM files from SD card"    ,276,192,88,96},
@@ -439,13 +441,14 @@ static gui_butn buttons_ctrls[13] =
 };
 
 /* Load Game menu */
-static gui_butn buttons_load[4] =
+static gui_butn buttons_load[5] =
 {
 #ifdef HW_RVL
-  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{0,2,0,1},246,102,148,132},
-  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{1,0,1,1}, 80,248,148,132},
-  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{2,0,1,1},246,248,148,132},
-  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{3,0,1,0},412,248,148,132}
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{0,2,0,1}, 80,120,148,132},
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{1,0,1,1},246,120,148,132},
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{2,0,1,1},412,120,148,132},
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{3,0,1,0},162,264,148,132},
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{3,0,1,0},330,264,148,132}
 #else
   {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{0,2,0,1}, 80,174,148,132},
   {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{1,0,1,1},246,174,148,132},
@@ -515,7 +518,7 @@ static gui_menu menu_load =
   "Load Game",
   0,0,
 #ifdef HW_RVL
-  4,4,5,0,
+  5,5,5,0,
 #else
   3,3,5,0,
 #endif
