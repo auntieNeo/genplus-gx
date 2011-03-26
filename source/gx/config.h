@@ -86,7 +86,7 @@ typedef struct
   float bgm_volume;
   float sfx_volume;
 #ifdef HW_RVL
-  char lastdir[3][MAXPATHLEN];
+  char lastdir[4][MAXPATHLEN];
 #else
   char lastdir[2][MAXPATHLEN];
 #endif

@@ -29,10 +29,12 @@
 #ifdef HW_RVL
 #define TYPE_USB (1)
 #define TYPE_DVD (2)
+#define TYPE_SMB (3)
+#define TYPE_RECENT (TYPE_SMB + 1)
 #else
 #define TYPE_DVD (1)
-#endif
 #define TYPE_RECENT (TYPE_DVD + 1)
+#endif
 
 #define FILECHUNK (2048)
 

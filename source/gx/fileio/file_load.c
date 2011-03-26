@@ -338,6 +338,12 @@ int OpenDirectory(int device)
       }
     }
 
+    if (device == TYPE_SMB)
+    {
+      GUI_WaitPrompt("Okay", "GUI button is working");
+      return 0;
+    }
+
     /* parse last directory */
     fileDir = config.lastdir[device];
     max = ParseDirectory();

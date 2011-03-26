@@ -2789,13 +2789,9 @@ static int loadgamemenu ()
       /*** Load from selected device */
       default:
       {
-        if (ret > 0)
+        if (ret >= 0)
         {
           ret = OpenDirectory(ret - 1);
-        }
-        else
-        {
-          ret = OpenDirectory(TYPE_RECENT);
         }
 
         if (ret)
