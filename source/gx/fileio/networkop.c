@@ -227,8 +227,8 @@ ConnectShare (bool silent)
 		return true;
 
 	int retry = 1;
-	int chkS = (strlen("smbshare") > 0) ? 0:1;  // FIXME: make this configurable
-	int chkI = (strlen("192.168.1.42") > 0) ? 0:1;  // FIXME
+	int chkS = (strlen("public") > 0) ? 0:1;  // FIXME: make this configurable
+	int chkI = (strlen("192.168.1.104") > 0) ? 0:1;  // FIXME
 
 	// check that all parameters have been set
 	if(chkS + chkI > 0)
@@ -255,7 +255,7 @@ ConnectShare (bool silent)
 		if(!silent)
 			GUI_MsgBoxOpen("Network", "Connecting to network share...", true);
 		
-		if(smbInit("smbuser", "smbpwd", "smbshare", "192.168.1.42"))  // TODO: allow the user to configure these settings
+		if(smbInit("nobody", "password", "public", "192.168.1.104"))  // TODO: allow the user to configure these settings
 			networkShareInit = true;
 
 		if(networkShareInit || silent)

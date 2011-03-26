@@ -343,6 +343,8 @@ int OpenDirectory(int device)
     {
       /* try to start the network */
       InitializeNetwork(false);
+      /* try to connect to the SMB share */
+      ConnectShare(false);
     }
 
     /* parse last directory */
