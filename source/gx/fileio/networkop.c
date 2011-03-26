@@ -171,7 +171,8 @@ bool InitializeNetwork(bool silent)
 
 	while(retry)
 	{
-		GUI_MsgBoxOpen("Network", "Initializing network...", true);
+		if(!silent)
+			GUI_MsgBoxOpen("Network", "Initializing network...", true);
 
 #ifdef HW_RVL
 		u64 start = gettime();
@@ -188,7 +189,8 @@ bool InitializeNetwork(bool silent)
 		networkInit = !(if_config(wiiIP, NULL, NULL, true) < 0);
 #endif
 
-		GUI_MsgBoxClose();
+		if(!silent)
+			GUI_MsgBoxClose();
 
 		if(networkInit || silent)
 			break;
@@ -202,6 +204,7 @@ bool InitializeNetwork(bool silent)
 #endif
 			return true;
 	}
+
 	return networkInit;
 }
 
@@ -265,7 +268,7 @@ ConnectShare (bool silent)
 	}
 
 	if(!silent)
-		;//GUI();  // FIXME: call the GUI loop I guess
+		GUI_MsgBoxClose();
 
 	return networkShareInit;
 }

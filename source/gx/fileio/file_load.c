@@ -38,7 +38,7 @@
 
 /* device root directories */
 #ifdef HW_RVL
-static const char rootdir[TYPE_RECENT][10] = {"sd:/","usb:/","dvd:/"};
+static const char rootdir[TYPE_RECENT][10] = {"sd:/","usb:/","dvd:/","smb:/"};
 #else
 static const char rootdir[TYPE_RECENT][10] = {"/","dvd:/"};
 #endif
@@ -342,9 +342,11 @@ int OpenDirectory(int device)
     if (device == TYPE_SMB)
     {
       /* try to start the network */
-      InitializeNetwork(false);
+      if(!InitializeNetwork(false))
+        return 0;
       /* try to connect to the SMB share */
-      ConnectShare(false);
+      if(!ConnectShare(false))
+        return 0;
     }
 
     /* parse last directory */
