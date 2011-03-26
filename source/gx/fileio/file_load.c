@@ -27,6 +27,7 @@
 #include "history.h"
 #include "unzip.h"
 #include "filesel.h"
+#include "networkop.h"
 
 #include <iso9660.h>
 #ifdef HW_RVL
@@ -340,8 +341,8 @@ int OpenDirectory(int device)
 
     if (device == TYPE_SMB)
     {
-      GUI_WaitPrompt("Okay", "GUI button is working");
-      return 0;
+      /* try to start the network */
+      InitializeNetwork(false);
     }
 
     /* parse last directory */

@@ -31,9 +31,6 @@ char wiiIP[16] = { 0 };
 
 #ifdef HW_RVL
 static int netHalt = 0;
-static bool updateChecked = false; // true if checked for app update
-static char updateURL[128]; // URL of app update
-bool updateFound = false; // true if an app update was found
 
 bool isSmbMounted = false;
 
