@@ -13,6 +13,10 @@
 #define NUM_KEYBOARD_KEYS 45
 #define KEYBOARD_X_POS 50
 #define KEYBOARD_Y_POS 150
+#define KEYBOARD_ROW_1 0
+#define KEYBOARD_ROW_2 KEYBOARD_ROW_1 + 11
+#define KEYBOARD_ROW_3 KEYBOARD_ROW_2 + 11
+#define KEYBOARD_ROW_4 KEYBOARD_ROW_3 + 12
 
 #ifdef HW_RVL
 extern const u8 Key_Minus_wii_png[];
@@ -59,7 +63,7 @@ static gui_item action_select =
 /*****************************************************************************/
 static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
 {
-  {NULL,NULL,"1",      "Add Character",     62,  0, 40, 40},
+  {NULL,NULL,"1",      "Add Character",     62,  0, 40, 40},  // 0
   {NULL,NULL,"2",      "Add Character",    108,  0, 40, 40},
   {NULL,NULL,"3",      "Add Character",    154,  0, 40, 40},
   {NULL,NULL,"4",      "Add Character",    200,  0, 40, 40},
@@ -69,7 +73,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,"8",      "Add Character",    384,  0, 40, 40},
   {NULL,NULL,"9",      "Add Character",    430,  0, 40, 40},
   {NULL,NULL,"0",      "Add Character",    476,  0, 40, 40},
-  {NULL,NULL,"Back",   "Remove Character", 522,  0, 80, 40},
+  {NULL,NULL,"Back",   "Remove Character", 522,  0, 80, 40},  // 10
   {NULL,NULL,"q",      "Add Character",     74, 46, 40, 40},
   {NULL,NULL,"w",      "Add Character",    120, 46, 40, 40},
   {NULL,NULL,"e",      "Add Character",    166, 46, 40, 40},
@@ -79,7 +83,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,"u",      "Add Character",    350, 46, 40, 40},
   {NULL,NULL,"i",      "Add Character",    396, 46, 40, 40},
   {NULL,NULL,"o",      "Add Character",    442, 46, 40, 40},
-  {NULL,NULL,"p",      "Add Character",    488, 46, 40, 40},
+  {NULL,NULL,"p",      "Add Character",    488, 46, 40, 40},  // 20
   {NULL,NULL,"-",      "Add Character",    534, 46, 40, 40},
   {NULL,NULL,"Caps",   "Caps Lock",          0, 92, 80, 40},
   {NULL,NULL,"a",      "Add Character",     86, 92, 40, 40},
@@ -89,7 +93,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,"g",      "Add Character",    270, 92, 40, 40},
   {NULL,NULL,"h",      "Add Character",    316, 92, 40, 40},
   {NULL,NULL,"j",      "Add Character",    362, 92, 40, 40},
-  {NULL,NULL,"k",      "Add Character",    408, 92, 40, 40},
+  {NULL,NULL,"k",      "Add Character",    408, 92, 40, 40},  // 30
   {NULL,NULL,"l",      "Add Character",    454, 92, 40, 40},
   {NULL,NULL,";",      "Add Character",    500, 92, 40, 40},
   {NULL,NULL,"'",      "Add Character",    546, 92, 40, 40},
@@ -99,7 +103,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,"c",      "Add Character",    190,138, 40, 40},
   {NULL,NULL,"v",      "Add Character",    236,138, 40, 40},
   {NULL,NULL,"b",      "Add Character",    282,138, 40, 40},
-  {NULL,NULL,"n",      "Add Character",    328,138, 40, 40},
+  {NULL,NULL,"n",      "Add Character",    328,138, 40, 40},  // 40
   {NULL,NULL,"m",      "Add Character",    374,138, 40, 40},
   {NULL,NULL,",",      "Add Character",    420,138, 40, 40},
   {NULL,NULL,".",      "Add Character",    466,138, 40, 40},
@@ -200,10 +204,13 @@ void drawKeyboard(int selected, int xOffset, int yOffset)
 
 void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size, int (*isValid)(const char *new, const char *old))
 {
-  int i, update = 0;
+  int i;
   int old, selected = 0;
+  int currentRow;
   int done = 0;
-  char buffer[MAXPATHLEN], title[MAXPATHLEN];
+  int shiftlock = 0;
+  int capslock = 0;
+  char title[MAXPATHLEN];
   s16 p;
   gui_butn *button;
   gx_texture *window, *top;
@@ -317,13 +324,100 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
     /* update screen */
     gxSetScreen();
 
-    /* update selection */
-    // TODO: allow the user to navigate keyboard with pad
-    if (p & PAD_BUTTON_UP)
+    /* allow user to navigate with directional pad */
+    if (p & (PAD_BUTTON_UP | PAD_BUTTON_DOWN))
     {
+      if (selected < KEYBOARD_ROW_2)
+        currentRow = 1;
+      else if (selected < KEYBOARD_ROW_3)
+        currentRow = 2;
+      else if (selected < KEYBOARD_ROW_4)
+        currentRow = 3;
+      else
+        currentRow = 4;
+      if (p & PAD_BUTTON_UP)
+      {
+        switch(currentRow)
+        {
+          case 1:
+            // do nothing
+            break;
+          case 2:
+            if(selected == 21)  // -
+            {
+              selected = 9;  // 0
+            }
+            else
+            {
+              selected -= 10;
+            }
+            break;
+          case 3:
+            if(selected == 22)  // Caps Lock
+            {
+              selected = 11;  // Q
+            }
+            else
+            {
+              selected -= 12;
+            }
+            break;
+          case 4:
+            selected -= 12;
+            break;
+        }
+      }
+      else if (p & PAD_BUTTON_DOWN)
+      {
+        switch(currentRow)
+        {
+          case 1:
+            selected += 10;
+            break;
+          case 2:
+            selected += 12;
+            break;
+          case 3:
+            if(selected == 33)  // '
+            {
+              selected = 44;  // /
+            }
+            else
+            {
+              selected += 12;
+            }
+            break;
+          case 4:
+            // TODO: move to spacebar
+            break;
+        }
+      }
     }
-    else if (p & PAD_BUTTON_DOWN)
+    else if (p & PAD_BUTTON_LEFT)
     {
+      switch(selected)
+      {
+        case KEYBOARD_ROW_1:
+        case KEYBOARD_ROW_2:
+        case KEYBOARD_ROW_3:
+        case KEYBOARD_ROW_4:
+          break;
+        default:
+          selected -= 1;
+      }
+    }
+    else if (p & PAD_BUTTON_RIGHT)
+    {
+      switch(selected)
+      {
+        case KEYBOARD_ROW_2 - 1:
+        case KEYBOARD_ROW_3 - 1:
+        case KEYBOARD_ROW_4 - 1:
+        case NUM_KEYBOARD_KEYS - 1:
+          break;
+        default:
+          selected += 1;
+      }
     }
 
     /* sound fx */
@@ -340,9 +434,49 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
     {
       if (selected >= 0)
       {
-        // TODO: check for backspace etc.
-        /* add a character */
-        snprintf(string, size, "%s%c", name, items_keyboard[selected].text[0]);
+        if(selected == 10)  // Backspace
+        {
+          /* remove a character */
+          i = strlen(string) - 1;
+          if(i != 0)
+          {
+            string[i - 1] = '\0';
+          }
+        }
+        else if(selected == 22)  // Caps Lock
+        {
+          if(shiftlock)
+          {
+            shift_keyboard();
+            shiftlock = 0;
+          }
+          shift_keyboard();
+          capslock = 1;
+
+        }
+        else if(selected == 34)  // Shift
+        {
+          if(!capslock && !shiftlock)  // shift doesn't work when capslock is on
+          {
+            shift_keyboard();
+            shiftlock = 1;
+          }
+          else if(shiftlock)
+          {
+            shift_keyboard();
+            shiftlock = 0;
+          }
+        }
+        else
+        {
+          /* add a character */
+          snprintf(string, size, "%s%c", name, items_keyboard[selected].text[0]);
+          if(shiftlock)
+          {
+            shift_keyboard();
+            shiftlock = 0;
+          }
+        }
       }
     }
     else if (p & PAD_BUTTON_B)
