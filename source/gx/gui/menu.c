@@ -2495,22 +2495,22 @@ static void netmenu(void)
     {
       case 0:  /*** Share IP ***/
 				strcpy(buffer, config.share_ip);
-				KeyboardMenu(m, "Share IP", buffer, MAXPATHLEN, NULL);
+				KeyboardMenu(m, "Share IP", buffer, MAXPATHLEN);
 				break;
 
       case 1:  /*** Share Name ***/
 				strcpy(buffer, config.share_name);
-				KeyboardMenu(m, "Share Name", buffer, MAXPATHLEN, NULL);
+				KeyboardMenu(m, "Share Name", buffer, MAXPATHLEN);
 				break;
 
       case 2:  /*** Username ***/
 				strcpy(buffer, config.share_username);
-				KeyboardMenu(m, "Username", buffer, MAXPATHLEN, NULL);
+				KeyboardMenu(m, "Username", buffer, MAXPATHLEN);
 				break;
 
       case 3:  /*** Password ***/
 				strcpy(buffer, config.share_password);
-				KeyboardMenu(m, "Password", buffer, MAXPATHLEN, NULL);
+				KeyboardMenu(m, "Password", buffer, MAXPATHLEN);
 				break;
 
       case -1:
