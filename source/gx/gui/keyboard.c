@@ -48,14 +48,14 @@ static butn_data button_mod_key_data =
 /*****************************************************************************/
 /*  GUI helpers                                                              */
 /*****************************************************************************/
-static gui_item action_cancel =
+static gui_item action_done =
 {
-  NULL,Key_B_png,"","Exit",10,422,28,28
+  NULL,Key_B_png,"","Done",10,422,28,28
 };
 
 static gui_item action_select =
 {
-  NULL,Key_A_png,"","Edit Entry",602,422,28,28
+  NULL,Key_A_png,"","",602,422,28,28
 };
 
 /*****************************************************************************/
@@ -202,6 +202,11 @@ void drawKeyboard(int selected, int xOffset, int yOffset)
   }
 }
 
+void shift_keyboard(void)
+{
+  // TODO
+}
+
 void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size, int (*isValid)(const char *new, const char *old))
 {
   int i;
@@ -270,6 +275,18 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
 
     /* draw keyboard */
     drawKeyboard(selected, xwindow, ywindow);
+
+    /* draw left comment */
+    gxDrawTexture(action_done.texture,action_done.x,action_done.y,action_done.w,action_done.h,255);
+    FONT_write(action_done.comment,16,action_done.x+action_done.w+6,action_done.y+(action_done.h-16)/2 + 16,640,(GXColor)WHITE);
+
+    /* draw right comment */
+    if(selected != -1)
+    {
+      strcpy(action_select.comment, items_keyboard[selected].comment);
+      gxDrawTexture(action_select.texture,action_select.x,action_select.y,action_select.w,action_select.h,255);
+      FONT_alignRight(action_select.comment,16,action_select.x-6,action_select.y+(action_select.h-16)/2+16,(GXColor)WHITE);
+    }
 
     old = selected;
     p = m_input.keys;
@@ -430,6 +447,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
       }
     }
 
+
     if (p & PAD_BUTTON_A)
     {
       if (selected >= 0)
@@ -445,6 +463,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
         }
         else if(selected == 22)  // Caps Lock
         {
+          /* toggle capslock */
           if(shiftlock)
           {
             shift_keyboard();
@@ -456,6 +475,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
         }
         else if(selected == 34)  // Shift
         {
+          /* toggle shiftlock */
           if(!capslock && !shiftlock)  // shift doesn't work when capslock is on
           {
             shift_keyboard();
@@ -515,12 +535,4 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
   gxTextureClose(&button_digit_data.texture[1]);
   gxTextureClose(&button_mod_key_data.texture[0]);
   gxTextureClose(&button_mod_key_data.texture[1]);
-}
-
-void keyboardmenu_cb(void)
-{
-}
-
-void shift_keyboard(void)
-{
 }

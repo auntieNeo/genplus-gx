@@ -310,9 +310,14 @@ static gui_item items_options[6] =
   {NULL,Option_system_png,"","System settings",       114,142,80,92},
   {NULL,Option_video_png ,"","Video settings",        288,150,64,84},
   {NULL,Option_sound_png ,"","Audio settings",        464,154,44,80},
+#ifdef HW_RVL
   {NULL,Option_ctrl_png  ,"","Controllers settings",  110,286,88,92},
   {NULL,Option_menu_png  ,"","Menu settings",         286,286,60,92},
   {NULL,Option_net_png  ,"","Network settings",      452,286,60,92}
+#else
+	{NULL,Option_ctrl_png  ,"","Controllers settings",  192,286,88,92},
+	{NULL,Option_menu_png  ,"","Menu settings",         370,286,60,92}
+#endif
 };
 
 /* Audio options */
@@ -393,6 +398,7 @@ static gui_item items_saves[9] =
   {NULL,NULL,"","Save file"          ,0,0,0,0}
 };
 
+#ifdef HW_RVL
 /* Network Options */
 static gui_item items_network[4] =
 {
@@ -401,6 +407,7 @@ static gui_item items_network[4] =
   {NULL,NULL,"Username:",     "Enter SMB Share Username",  56,132,276,48},
   {NULL,NULL,"Password:",     "Enter SMB Share Password",  56,132,276,48},
 };
+#endif
 
 /*****************************************************************************/
 /*  Menu Buttons description                                                 */
@@ -548,7 +555,11 @@ static gui_menu menu_options =
 {
   "Settings",
   0,0,
+#ifdef HW_RVL
   6,6,5,0,
+#else
+  5,5,5,0,
+#endif
   items_options,
   buttons_options,
   bg_misc,
@@ -628,6 +639,7 @@ static gui_menu menu_saves =
   savemenu_cb
 };
 
+#ifdef HW_RVL
 /* Network Options menu */
 static gui_menu menu_network =
 {
@@ -641,6 +653,7 @@ static gui_menu menu_network =
   {&arrow_up,&arrow_down},
   NULL
 };
+#endif
 
 /****************************************************************************
  * GUI Settings menu
@@ -2418,6 +2431,7 @@ int validateIp(const char *ip)
 	return 1;
 }
 
+#ifdef HW_RVL
 /****************************************************************************
  * Network Option menu
  *
@@ -2507,6 +2521,7 @@ static void netmenu(void)
 
   GUI_DeleteMenu(m);
 }
+#endif
 
 /****************************************************************************
  * Main Option menu
@@ -2551,11 +2566,13 @@ static void optionmenu(void)
         prefmenu();
         GUI_InitMenu(m);
         break;
+#ifdef HW_RVL
       case 5:
         GUI_DeleteMenu(m);
         netmenu();
         GUI_InitMenu(m);
         break;
+#endif
       case -1:
         quit = 1;
         break;

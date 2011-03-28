@@ -156,11 +156,13 @@ void config_default(void)
   sprintf (config.lastdir[TYPE_DVD], "dvd:%s/roms/", DEFAULT_PATH);
 #endif
 
+#ifdef HW_RVL
 	/* network settings */
 	strcpy(config.share_ip, "192.168.1.104");
 	strcpy(config.share_name, "public");
 	strcpy(config.share_username, "nobody");
 	strcpy(config.share_password, "password");
+#endif
 
   /* try to restore settings from config file */
   if (!config_load()) GUI_WaitPrompt("Info","Default Settings restored");

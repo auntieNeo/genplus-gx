@@ -339,8 +339,10 @@ int OpenDirectory(int device)
       }
     }
 
+#ifdef HW_RVL
     if (device == TYPE_SMB)
     {
+      // TODO: check the status of the connection and reconnect if necessary
       /* try to start the network */
       if(!InitializeNetwork(false))
         return 0;
@@ -348,6 +350,7 @@ int OpenDirectory(int device)
       if(!ConnectShare(false))
         return 0;
     }
+#endif
 
     /* parse last directory */
     fileDir = config.lastdir[device];

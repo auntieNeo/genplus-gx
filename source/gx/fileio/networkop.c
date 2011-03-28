@@ -8,6 +8,7 @@
  * Network and SMB support routines
  ****************************************************************************/
 
+#ifdef HW_RVL
 #include <network.h>
 #include <malloc.h>
 #include <ogc/lwp_watchdog.h>
@@ -274,3 +275,4 @@ ConnectShare (bool silent)
 
 	return networkShareInit;
 }
+#endif
