@@ -10,6 +10,8 @@
 #define BG_COLOR_1 {0x49,0x49,0x49,0xff}
 #define BG_COLOR_2 {0x66,0x66,0x66,0xff}
 
+#define NUM_KEYBOARD_KEYS 45
+
 #ifdef HW_RVL
 extern const u8 Key_Minus_wii_png[];
 extern const u8 Key_Plus_wii_png[];
@@ -22,30 +24,11 @@ extern const u8 Key_DPAD_png[];
 /*****************************************************************************/
 /*  GUI Buttons data                                                         */
 /*****************************************************************************/
-static butn_data arrow_up_data =
-{
-  {NULL,NULL},
-  {Button_up_png,Button_up_over_png}
-};
-
-static butn_data arrow_down_data =
-{
-  {NULL,NULL},
-  {Button_down_png,Button_down_over_png}
-};
-
 static butn_data button_digit_data =
 {
   {NULL,NULL},
   {Button_digit_png,Button_digit_over_png}
 };
-
-/*****************************************************************************/
-/*  GUI Arrows button                                                        */
-/*****************************************************************************/
-
-static gui_butn arrow_up = {&arrow_up_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{0,0,0,0},14,76,360,32};
-static gui_butn arrow_down = {&arrow_down_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{0,0,0,0},14,368,360,32};
 
 /*****************************************************************************/
 /*  GUI helpers                                                              */
@@ -61,23 +44,10 @@ static gui_item action_select =
 };
 
 /*****************************************************************************/
-/*  GUI Background images                                                    */
-/*****************************************************************************/
-static gui_image bg_keyboard[5] =
-{
-  {NULL,Bg_main_png,IMAGE_VISIBLE,374,140,284,288,255},
-  {NULL,Bg_overlay_png,IMAGE_VISIBLE|IMAGE_REPEAT,0,0,640,480,255},
-  {NULL,Banner_top_png,IMAGE_VISIBLE,0,0,640,108,255},
-  {NULL,Banner_bottom_png,IMAGE_VISIBLE,0,380,640,100,255},
-  {NULL,Main_logo_png,IMAGE_VISIBLE,466,40,152,44,255},
-};
-
-/*****************************************************************************/
 /*  Menu Items description                                                   */
 /*****************************************************************************/
-static gui_item items_keyboard[46] =
+static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
 {
-  {NULL,NULL,"","Current String",0,0,0,0},
   {NULL,NULL,"1",      "Add Character",     70,150, 40, 40},
   {NULL,NULL,"2",      "Add Character",    116,150, 40, 40},
   {NULL,NULL,"3",      "Add Character",    162,150, 40, 40},
@@ -128,9 +98,8 @@ static gui_item items_keyboard[46] =
 /*****************************************************************************/
 /*  Menu Buttons description                                                 */
 /*****************************************************************************/
-static gui_butn buttons_keyboard[46] =
+static gui_butn buttons_keyboard[NUM_KEYBOARD_KEYS] =
 {
-  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},0,0,0,0},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1}, 70,150, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},116,150, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},162,150, 40, 40},
@@ -178,87 +147,164 @@ static gui_butn buttons_keyboard[46] =
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},520,288, 40, 40},
 };
 
-/*****************************************************************************/
-/*  Menu description                                                         */
-/*****************************************************************************/
-static gui_menu menu_keyboard =
-{
-  "Virtual Keyboard",
-  0,0,
-  46,46,5,0,
-  items_keyboard,
-  buttons_keyboard,
-  bg_keyboard,
-  {&action_cancel, &action_select},
-  {&arrow_up,&arrow_down},
-  keyboardmenu_cb
-};
-
-void KeyboardMenu(char *string, size_t size)
+void KeyboardMenu(gui_menu *parent, char *string, size_t size)
 {
   int i, update = 0;
-  int digit_cnt = 0;
-  int max = 0;
-	gui_menu *m = &menu_keyboard;
+  int old, selected = 0;
+	int done = 0;
+  s16 p;
+	gui_butn *button;
+	gui_item *item;
+#ifdef HW_RVL
+  int x,y;
+#endif
 
-  /* background type */
-  if (config.bg_type > 0)
+	/* initilize images */
+	button_digit_data.texture[0] = gxTextureOpenPNG(button_digit_data.image[0],0);
+	button_digit_data.texture[1] = gxTextureOpenPNG(button_digit_data.image[1],0);
+
+	// TODO: slide in
+
+  while (!done)
   {
-    bg_keyboard[0].state &= ~IMAGE_REPEAT;
-    bg_keyboard[0].data = (config.bg_type > 1) ? Bg_main_png : Bg_main_2_png;
-    bg_keyboard[0].x = 374;
-    bg_keyboard[0].y = 140;
-    bg_keyboard[0].w = 284;
-    bg_keyboard[0].h = 288;
-  }
-  else
-  {
-    bg_keyboard[0].state |= IMAGE_REPEAT;
-    bg_keyboard[0].data = Bg_layer_png;
-    bg_keyboard[0].x = 0;
-    bg_keyboard[0].y = 0;
-    bg_keyboard[0].w = 640;
-    bg_keyboard[0].h = 480;
-  }
+		/* draw parent menu */
+		GUI_DrawMenu(parent);
 
-  /* background overlay */
-  if (config.bg_overlay)
-  {
-    bg_keyboard[1].state |= IMAGE_VISIBLE;
-  }
-  else
-  {
-    bg_keyboard[1].state &= ~IMAGE_VISIBLE;
-  }
+    /* draw key buttons and items */
+		for (i = 0; i < NUM_KEYBOARD_KEYS; i++)
+		{
+			button = &buttons_keyboard[i];
 
-  /* init menu */
-  GUI_InitMenu(m);
-  m->cb = keyboardmenu_cb;
+			if (button->state & BUTTON_VISIBLE)
+			{
+				item = &items_keyboard[i];
 
-  while (update != -1)
-  {
-    /* draw menu */
-    GUI_DrawMenu(m);
+				/* draw button + items */ 
+				if (i == selected)
+				{
+					if (button->data)
+						gxDrawTexture(button->data->texture[1],button->x-4,button->y-4,button->w+8,button->h+8,255);
 
-    /* update menu */
-    update = GUI_UpdateMenu(m);
+					if (item)
+					{
+						if (item->texture)
+						{
+							gxDrawTexture(item->texture, item->x-4,item->y-4,item->w+8,item->h+8,255);
+							FONT_writeCenter(item->text,18,button->x+4,item->x-4,button->y+(button->h - 36)/2+18,(GXColor)DARK_GREY);
+						}
+						else
+						{
+							FONT_writeCenter(item->text,18,item->x-4,item->x+item->w+4,button->y+(button->h-18)/2+18,(GXColor)DARK_GREY);
+						}
+					}
+				}
+				else
+				{
+					if (button->data)
+						gxDrawTexture(button->data->texture[0],button->x,button->y,button->w, button->h,255);
 
-    /* handle pressed buttons */
-    if (update > 0)
+					if (item)
+					{
+						if (item->texture)
+						{
+							gxDrawTexture(item->texture,item->x,item->y,item->w,item->h,255);
+							FONT_writeCenter(item->text,16,button->x+8,item->x,button->y+(button->h - 32)/2+16,(GXColor)DARK_GREY);
+						}
+						else
+						{
+							FONT_writeCenter(item->text,16,item->x,item->x+item->w,button->y+(button->h - 16)/2+16,(GXColor)DARK_GREY);
+						}
+					}
+				}
+			}
+		}
+
+		old = selected;
+    p = m_input.keys;
+
+#ifdef HW_RVL
+    if (Shutdown)
     {
+			gxTextureClose(&button_digit_data.texture[0]);
+			gxTextureClose(&button_digit_data.texture[1]);
+      gxTextureClose(&w_pointer);
+      GUI_DeleteMenu(parent);
+      GUI_FadeOut();
+      shutdown();
+      SYS_ResetSystem(SYS_POWEROFF, 0, 0);
     }
-    else if (update < 0)
+    else if (m_input.ir.valid)
     {
-			// do something
+      /* get cursor position */
+      x = m_input.ir.x;
+      y = m_input.ir.y;
+
+      /* draw wiimote pointer */
+      gxDrawTextureRotate(w_pointer, x-w_pointer->width/2, y-w_pointer->height/2, w_pointer->width, w_pointer->height,m_input.ir.angle,255);
+
+      /* check for valid buttons */
+      selected = -1;
+      for (i = 0; i < NUM_KEYBOARD_KEYS; i++)
+      {
+				button = &buttons_keyboard[i];
+				if ((button->state & BUTTON_ACTIVE) && (button->state & BUTTON_VISIBLE))
+				{
+					if((x>=button->x)&&(x<=(button->x+button->w))&&(y>=button->y)&&(y<=(button->y+button->h)))
+					{
+						selected = i;
+						break;
+					}
+				}
+      }
     }
     else
     {
+      /* reinitialize selection */
+      if (selected == -1)
+        selected = 0;
+    }
+#endif
+
+    /* update screen */
+    gxSetScreen();
+
+    /* update selection */
+		// TODO: allow the user to navigate keyboard with pad
+    if (p & PAD_BUTTON_UP)
+    {
+    }
+    else if (p & PAD_BUTTON_DOWN)
+    {
+    }
+
+    /* sound fx */
+    if (selected != old)
+    {
+      if (selected >= 0)
+      {
+        ASND_SetVoice(ASND_GetFirstUnusedVoice(),VOICE_MONO_16BIT,22050,0,(u8 *)button_over_pcm,button_over_pcm_size,
+                      ((int)config.sfx_volume * 255) / 100,((int)config.sfx_volume * 255) / 100,NULL);
+      }
+    }
+
+    if (p & PAD_BUTTON_A)
+    {
+      if (selected >= 0)
+      {
+				// TODO: add a character
+      }
+    }
+    else if (p & PAD_BUTTON_B)
+    {
+      done = 1;
     }
   }
 
-  /* leave menu */
-  m->cb = NULL;
-  GUI_DeleteMenu(m);
+	// TODO: slide out
+
+  /* close textures */
+	gxTextureClose(&button_digit_data.texture[0]);
+	gxTextureClose(&button_digit_data.texture[1]);
 }
 
 void keyboardmenu_cb(void)

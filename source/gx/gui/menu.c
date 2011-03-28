@@ -2480,27 +2480,19 @@ static void netmenu(void)
     switch (ret)
     {
       case 0:  /*** Share IP ***/
-        GUI_DeleteMenu(m);
-				KeyboardMenu(buffer, MAXPATHLEN);
-        GUI_InitMenu(m);
+				KeyboardMenu(m, buffer, MAXPATHLEN);
 				break;
 
       case 1:  /*** Share Name ***/
-        GUI_DeleteMenu(m);
-				KeyboardMenu(buffer, MAXPATHLEN);
-        GUI_InitMenu(m);
+				KeyboardMenu(m, buffer, MAXPATHLEN);
 				break;
 
       case 2:  /*** Username ***/
-        GUI_DeleteMenu(m);
-				KeyboardMenu(buffer, MAXPATHLEN);
-        GUI_InitMenu(m);
+				KeyboardMenu(m, buffer, MAXPATHLEN);
 				break;
 
       case 3:  /*** Password ***/
-        GUI_DeleteMenu(m);
-				KeyboardMenu(buffer, MAXPATHLEN);
-        GUI_InitMenu(m);
+				KeyboardMenu(m, buffer, MAXPATHLEN);
 				break;
 
       case -1:
