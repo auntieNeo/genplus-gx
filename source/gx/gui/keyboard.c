@@ -63,14 +63,13 @@ static gui_item action_select =
 /*****************************************************************************/
 /*  GUI Background images                                                    */
 /*****************************************************************************/
-static gui_image bg_keyboard[6] =
+static gui_image bg_keyboard[5] =
 {
   {NULL,Bg_main_png,IMAGE_VISIBLE,374,140,284,288,255},
   {NULL,Bg_overlay_png,IMAGE_VISIBLE|IMAGE_REPEAT,0,0,640,480,255},
   {NULL,Banner_top_png,IMAGE_VISIBLE,0,0,640,108,255},
   {NULL,Banner_bottom_png,IMAGE_VISIBLE,0,380,640,100,255},
   {NULL,Main_logo_png,IMAGE_VISIBLE,466,40,152,44,255},
-  {NULL,Frame_s1_png,IMAGE_VISIBLE,8,70,372,336,152},
 };
 
 /*****************************************************************************/
@@ -186,7 +185,7 @@ static gui_menu menu_keyboard =
 {
   "Virtual Keyboard",
   0,0,
-  46,46,6,0,
+  46,46,5,0,
   items_keyboard,
   buttons_keyboard,
   bg_keyboard,
