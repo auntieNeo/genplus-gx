@@ -29,6 +29,7 @@
 #include "cheats.h"
 #include "file_load.h"
 #include "file_slot.h"
+#include "keyboard.h"
 
 #include <ogc/lwp_threads.h>
 
@@ -395,8 +396,8 @@ static gui_item items_saves[9] =
 /* Network Options */
 static gui_item items_network[4] =
 {
-  {NULL,NULL,"Share IP:",           "Enter SMB Share IP",        56,132,276,48},
-  {NULL,NULL,"Share Name:",   "Enter SMB Share IP",        56,132,276,48},
+  {NULL,NULL,"Share IP:",     "Enter SMB Share IP",        56,132,276,48},
+  {NULL,NULL,"Share Name:",   "Enter SMB Share Name",      56,132,276,48},
   {NULL,NULL,"Username:",     "Enter SMB Share Username",  56,132,276,48},
   {NULL,NULL,"Password:",     "Enter SMB Share Password",  56,132,276,48},
 };
@@ -2412,6 +2413,11 @@ static void ctrlmenu(void)
 #endif
 }
 
+int validateIp(const char *ip)
+{
+	return 1;
+}
+
 /****************************************************************************
  * Network Option menu
  *
@@ -2419,10 +2425,9 @@ static void ctrlmenu(void)
 static void netmenu(void)
 {
   int ret, quit = 0;
-  float framerate;
-  u8 *temp;
   gui_menu *m = &menu_network;
   gui_item *items = m->items;
+	char buffer[MAXPATHLEN];
 
 	/*
   if (config.region_detect == 0)
@@ -2460,6 +2465,11 @@ static void netmenu(void)
   }
 		*/
 
+	sprintf (items[0].text, "Share IP: %s", config.share_ip);
+	sprintf (items[1].text, "Share Name: %s", config.share_name);
+	sprintf (items[2].text, "Username: %s", config.share_username);
+	sprintf (items[3].text, "Password: %s", config.share_password);
+
   GUI_InitMenu(m);
   GUI_SlideMenuTitle(m,strlen("Network "));
 
@@ -2470,15 +2480,27 @@ static void netmenu(void)
     switch (ret)
     {
       case 0:  /*** Share IP ***/
+        GUI_DeleteMenu(m);
+				KeyboardMenu(buffer, MAXPATHLEN);
+        GUI_InitMenu(m);
 				break;
 
       case 1:  /*** Share Name ***/
+        GUI_DeleteMenu(m);
+				KeyboardMenu(buffer, MAXPATHLEN);
+        GUI_InitMenu(m);
 				break;
 
       case 2:  /*** Username ***/
+        GUI_DeleteMenu(m);
+				KeyboardMenu(buffer, MAXPATHLEN);
+        GUI_InitMenu(m);
 				break;
 
       case 3:  /*** Password ***/
+        GUI_DeleteMenu(m);
+				KeyboardMenu(buffer, MAXPATHLEN);
+        GUI_InitMenu(m);
 				break;
 
       case -1:

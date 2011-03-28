@@ -90,6 +90,12 @@ typedef struct
 #else
   char lastdir[2][MAXPATHLEN];
 #endif
+#ifdef HW_RVL
+	char share_ip[MAXPATHLEN];
+	char share_name[MAXPATHLEN];
+	char share_username[MAXPATHLEN];
+	char share_password[MAXPATHLEN];
+#endif
 } t_config;
 
 /* Global data */

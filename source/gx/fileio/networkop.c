@@ -22,8 +22,10 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "shared.h"
 #include "gx_video.h"
 #include "gui.h"
+#include "config.h"
 
 static bool networkInit = false;
 static bool networkShareInit = false;
@@ -195,7 +197,7 @@ bool InitializeNetwork(bool silent)
 		if(networkInit || silent)
 			break;
 
-		retry = false; GUI_WaitPrompt("Error", "Unable to initialize network!");  // TODO: allow the user to retry
+		retry = false; GUI_WaitPrompt("Error", "Unable to initialize network!");  // TODO: allow the user to retryc
 		
 #ifdef HW_RVL  	
 		if(networkInit && net_gethostip() > 0)
@@ -230,8 +232,8 @@ ConnectShare (bool silent)
 		return true;
 
 	int retry = 1;
-	int chkS = (strlen("public") > 0) ? 0:1;  // FIXME: make this configurable
-	int chkI = (strlen("192.168.1.104") > 0) ? 0:1;  // FIXME
+	int chkS = (strlen(config.share_name) > 0) ? 0:1;
+	int chkI = (strlen(config.share_ip) > 0) ? 0:1;
 
 	// check that all parameters have been set
 	if(chkS + chkI > 0)
@@ -241,7 +243,7 @@ ConnectShare (bool silent)
 			char msg[50];
 			char msg2[100];
 			if(chkS + chkI > 1) // more than one thing is wrong
-				sprintf(msg, "Check settings.xml.");
+				sprintf(msg, "Check the network config.");
 			else if(chkS)
 				sprintf(msg, "Share name is blank.");
 			else if(chkI)
@@ -258,7 +260,7 @@ ConnectShare (bool silent)
 		if(!silent)
 			GUI_MsgBoxOpen("Network", "Connecting to network share...", true);
 		
-		if(smbInit("nobody", "password", "public", "192.168.1.104"))  // TODO: allow the user to configure these settings
+		if(smbInit(config.share_username, config.share_password, config.share_name, config.share_ip))
 			networkShareInit = true;
 
 		if(networkShareInit || silent)
