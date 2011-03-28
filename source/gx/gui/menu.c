@@ -56,6 +56,7 @@ extern const u8 Option_ctrl_png[];
 extern const u8 Option_sound_png[];
 extern const u8 Option_video_png[];
 extern const u8 Option_system_png[];
+extern const u8 Option_net_png[];
 
 /* Load ROM menu */
 extern const u8 Load_recent_png[];
@@ -303,13 +304,14 @@ static gui_item items_load[5] =
 };
 
 /* Option menu */
-static gui_item items_options[5] =
+static gui_item items_options[6] =
 {
   {NULL,Option_system_png,"","System settings",       114,142,80,92},
   {NULL,Option_video_png ,"","Video settings",        288,150,64,84},
   {NULL,Option_sound_png ,"","Audio settings",        464,154,44,80},
-  {NULL,Option_ctrl_png  ,"","Controllers settings",  192,286,88,92},
-  {NULL,Option_menu_png  ,"","Menu settings",         370,286,60,92}
+  {NULL,Option_ctrl_png  ,"","Controllers settings",  110,286,88,92},
+  {NULL,Option_menu_png  ,"","Menu settings",         286,286,60,92},
+  {NULL,Option_net_png  ,"","Network settings",      452,286,60,92}
 };
 
 /* Audio options */
@@ -390,6 +392,15 @@ static gui_item items_saves[9] =
   {NULL,NULL,"","Save file"          ,0,0,0,0}
 };
 
+/* Network Options */
+static gui_item items_network[4] =
+{
+  {NULL,NULL,"Share IP:",           "Enter SMB Share IP",        56,132,276,48},
+  {NULL,NULL,"Share Name:",   "Enter SMB Share IP",        56,132,276,48},
+  {NULL,NULL,"Username:",     "Enter SMB Share Username",  56,132,276,48},
+  {NULL,NULL,"Password:",     "Enter SMB Share Password",  56,132,276,48},
+};
+
 /*****************************************************************************/
 /*  Menu Buttons description                                                 */
 /*****************************************************************************/
@@ -457,13 +468,14 @@ static gui_butn buttons_load[5] =
 };
 
 /* Options menu */
-static gui_butn buttons_options[5] =
+static gui_butn buttons_options[6] =
 {
   {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{0,3,0,1}, 80,120,148,132},
   {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{0,3,1,1},246,120,148,132},
   {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{0,2,1,1},412,120,148,132},
-  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{3,0,1,1},162,264,148,132},
-  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{2,0,1,0},330,264,148,132}
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{3,0,1,1}, 80,264,148,132},
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{2,0,1,0},246,264,148,132},
+  {&button_icon_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX|BUTTON_SELECT_SFX,{2,0,1,0},412,264,148,132}
 };
 
 /* Save Manager Menu */
@@ -535,7 +547,7 @@ static gui_menu menu_options =
 {
   "Settings",
   0,0,
-  5,5,5,0,
+  6,6,5,0,
   items_options,
   buttons_options,
   bg_misc,
@@ -613,6 +625,20 @@ static gui_menu menu_saves =
   {&action_cancel, &action_select},
   {NULL,NULL},
   savemenu_cb
+};
+
+/* Network Options menu */
+static gui_menu menu_network =
+{
+  "Network Settings",
+  0,0,
+  4,4,6,0,
+  items_network,
+  buttons_list,
+  bg_list,
+  {&action_cancel, &action_select},
+  {&arrow_up,&arrow_down},
+  NULL
 };
 
 /****************************************************************************
@@ -2387,6 +2413,84 @@ static void ctrlmenu(void)
 }
 
 /****************************************************************************
+ * Network Option menu
+ *
+ ****************************************************************************/
+static void netmenu(void)
+{
+  int ret, quit = 0;
+  float framerate;
+  u8 *temp;
+  gui_menu *m = &menu_network;
+  gui_item *items = m->items;
+
+	/*
+  if (config.region_detect == 0)
+    sprintf (items[0].text, "Console Region: AUTO");
+  else if (config.region_detect == 1)
+    sprintf (items[0].text, "Console Region: USA");
+  else if (config.region_detect == 2)
+    sprintf (items[0].text, "Console Region: EUR");
+  else if (config.region_detect == 3)
+    sprintf (items[0].text, "Console Region: JAPAN");
+
+  sprintf (items[1].text, "System Lockups: %s", config.force_dtack ? "OFF" : "ON");
+  sprintf (items[2].text, "68k Address Error: %s", config.addr_error ? "ON" : "OFF");
+  sprintf (items[3].text, "System TMSS: %s", (config.tmss & 1) ? "ON":"OFF");
+
+  if (config.lock_on == TYPE_GG)
+    sprintf (items[4].text, "Lock-On: GAME GENIE");
+  else if (config.lock_on == TYPE_AR)
+    sprintf (items[4].text, "Lock-On: ACTION REPLAY");
+  else if (config.lock_on == TYPE_SK)
+    sprintf (items[4].text, "Lock-On: SONIC&KNUCKLES");
+  else
+    sprintf (items[4].text, "Lock-On: OFF");
+
+  sprintf (items[5].text, "Cartridge Swap: %s", config.hot_swap ? "ON":"OFF");
+
+  if (svp)
+  {
+    sprintf (items[6].text, "SVP Cycles: %d", SVP_cycles);
+    m->max_items = 7;
+  }
+  else
+  {
+    m->max_items = 6;
+  }
+		*/
+
+  GUI_InitMenu(m);
+  GUI_SlideMenuTitle(m,strlen("Network "));
+
+  while (quit == 0)
+  {
+    ret = GUI_RunMenu(m);
+
+    switch (ret)
+    {
+      case 0:  /*** Share IP ***/
+				break;
+
+      case 1:  /*** Share Name ***/
+				break;
+
+      case 2:  /*** Username ***/
+				break;
+
+      case 3:  /*** Password ***/
+				break;
+
+      case -1:
+        quit = 1;
+        break;
+    }
+  }
+
+  GUI_DeleteMenu(m);
+}
+
+/****************************************************************************
  * Main Option menu
  *
  ****************************************************************************/
@@ -2427,6 +2531,11 @@ static void optionmenu(void)
       case 4:
         GUI_DeleteMenu(m);
         prefmenu();
+        GUI_InitMenu(m);
+        break;
+      case 5:
+        GUI_DeleteMenu(m);
+        netmenu();
         GUI_InitMenu(m);
         break;
       case -1:
