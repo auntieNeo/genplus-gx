@@ -2480,19 +2480,23 @@ static void netmenu(void)
     switch (ret)
     {
       case 0:  /*** Share IP ***/
-				KeyboardMenu(m, buffer, MAXPATHLEN);
+				strcpy(buffer, config.share_ip);
+				KeyboardMenu(m, "Share IP", buffer, MAXPATHLEN, NULL);
 				break;
 
       case 1:  /*** Share Name ***/
-				KeyboardMenu(m, buffer, MAXPATHLEN);
+				strcpy(buffer, config.share_name);
+				KeyboardMenu(m, "Share Name", buffer, MAXPATHLEN, NULL);
 				break;
 
       case 2:  /*** Username ***/
-				KeyboardMenu(m, buffer, MAXPATHLEN);
+				strcpy(buffer, config.share_username);
+				KeyboardMenu(m, "Username", buffer, MAXPATHLEN, NULL);
 				break;
 
       case 3:  /*** Password ***/
-				KeyboardMenu(m, buffer, MAXPATHLEN);
+				strcpy(buffer, config.share_password);
+				KeyboardMenu(m, "Password", buffer, MAXPATHLEN, NULL);
 				break;
 
       case -1:

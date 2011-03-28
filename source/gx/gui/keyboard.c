@@ -11,6 +11,8 @@
 #define BG_COLOR_2 {0x66,0x66,0x66,0xff}
 
 #define NUM_KEYBOARD_KEYS 45
+#define KEYBOARD_X_POS 50
+#define KEYBOARD_Y_POS 150
 
 #ifdef HW_RVL
 extern const u8 Key_Minus_wii_png[];
@@ -147,86 +149,120 @@ static gui_butn buttons_keyboard[NUM_KEYBOARD_KEYS] =
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},520,288, 40, 40},
 };
 
-void KeyboardMenu(gui_menu *parent, char *string, size_t size)
+void drawKeyboard(int selected, int xOffset, int yOffset)
+{
+  int i;
+  gui_butn *button;
+  gui_item *item;
+
+  /* draw key buttons and items */
+  for (i = 0; i < NUM_KEYBOARD_KEYS; i++)
+  {
+    button = &buttons_keyboard[i];
+
+    if (button->state & BUTTON_VISIBLE)
+    {
+      item = &items_keyboard[i];
+
+      /* draw button + items */ 
+      if (i == selected)
+      {
+        if (button->data)
+          gxDrawTexture(button->data->texture[1],button->x-4 + xOffset,button->y-4 + yOffset,button->w+8,button->h+8,255);
+
+        if (item)
+        {
+          FONT_writeCenter(item->text,18,item->x-4 + xOffset,item->x+item->w+4 + yOffset,button->y+(button->h-18)/2+18,(GXColor)DARK_GREY);
+        }
+      }
+      else
+      {
+        if (button->data)
+          gxDrawTexture(button->data->texture[0],button->x + xOffset,button->y + yOffset,button->w, button->h,255);
+
+        if (item)
+        {
+          FONT_writeCenter(item->text,16,item->x + xOffset,item->x+item->w + yOffset,button->y+(button->h - 16)/2+16,(GXColor)DARK_GREY);
+        }
+      }
+    }
+  }
+}
+
+void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size, int (*isValid)(const char *new, const char *old))
 {
   int i, update = 0;
   int old, selected = 0;
-	int done = 0;
+  int done = 0;
+  char buffer[MAXPATHLEN], title[MAXPATHLEN];
   s16 p;
-	gui_butn *button;
-	gui_item *item;
+  gui_butn *button;
+  gx_texture *window, *top;
 #ifdef HW_RVL
   int x,y;
 #endif
 
-	/* initilize images */
-	button_digit_data.texture[0] = gxTextureOpenPNG(button_digit_data.image[0],0);
-	button_digit_data.texture[1] = gxTextureOpenPNG(button_digit_data.image[1],0);
+  /* window position */
+  int xwindow = 166;
+  int ywindow = 160;
 
-	// TODO: slide in
+  /* initilize images */
+  window = gxTextureOpenPNG(Frame_s2_png,0);
+  top = gxTextureOpenPNG(Frame_s2_title_png,0);
+  button_digit_data.texture[0] = gxTextureOpenPNG(button_digit_data.image[0],0);
+  button_digit_data.texture[1] = gxTextureOpenPNG(button_digit_data.image[1],0);
+
+  /* initilize title*/
+  snprintf(title, MAXPATHLEN, "%s: %s", name, string);
+
+  /* slide in */
+  int yoffset = -(ywindow + window->height);
+  while (yoffset < 0)
+  {
+    /* draw parent menu */
+    GUI_DrawMenu(parent);
+
+    /* draw window */
+    gxDrawTexture(window,xwindow,ywindow+yoffset,window->width,window->height,225);
+    gxDrawTexture(top,xwindow,ywindow+yoffset,top->width,top->height,255);
+
+    /* display title */
+    FONT_writeCenter(title,20,xwindow,xwindow+window->width,ywindow+(top->height-20)/2+20+yoffset,(GXColor)WHITE);
+
+//    drawKeyboard(selected, xoffset, yoffset);
+
+    /* update display */
+    gxSetScreen();
+
+    /* slide speed */
+    yoffset += 60;
+  }
 
   while (!done)
   {
-		/* draw parent menu */
-		GUI_DrawMenu(parent);
+    /* draw parent menu */
+    GUI_DrawMenu(parent);
 
-    /* draw key buttons and items */
-		for (i = 0; i < NUM_KEYBOARD_KEYS; i++)
-		{
-			button = &buttons_keyboard[i];
+    /* draw window */
+    gxDrawTexture(window,xwindow,ywindow,window->width,window->height,225);
+    gxDrawTexture(top,xwindow,ywindow,top->width,top->height,255);
 
-			if (button->state & BUTTON_VISIBLE)
-			{
-				item = &items_keyboard[i];
+    /* display title */
+    FONT_writeCenter(title,20,xwindow,xwindow+window->width,ywindow+(top->height-20)/2+20,(GXColor)WHITE);
 
-				/* draw button + items */ 
-				if (i == selected)
-				{
-					if (button->data)
-						gxDrawTexture(button->data->texture[1],button->x-4,button->y-4,button->w+8,button->h+8,255);
+    /* draw keyboard */
+    drawKeyboard(selected, xwindow, ywindow);
 
-					if (item)
-					{
-						if (item->texture)
-						{
-							gxDrawTexture(item->texture, item->x-4,item->y-4,item->w+8,item->h+8,255);
-							FONT_writeCenter(item->text,18,button->x+4,item->x-4,button->y+(button->h - 36)/2+18,(GXColor)DARK_GREY);
-						}
-						else
-						{
-							FONT_writeCenter(item->text,18,item->x-4,item->x+item->w+4,button->y+(button->h-18)/2+18,(GXColor)DARK_GREY);
-						}
-					}
-				}
-				else
-				{
-					if (button->data)
-						gxDrawTexture(button->data->texture[0],button->x,button->y,button->w, button->h,255);
-
-					if (item)
-					{
-						if (item->texture)
-						{
-							gxDrawTexture(item->texture,item->x,item->y,item->w,item->h,255);
-							FONT_writeCenter(item->text,16,button->x+8,item->x,button->y+(button->h - 32)/2+16,(GXColor)DARK_GREY);
-						}
-						else
-						{
-							FONT_writeCenter(item->text,16,item->x,item->x+item->w,button->y+(button->h - 16)/2+16,(GXColor)DARK_GREY);
-						}
-					}
-				}
-			}
-		}
-
-		old = selected;
+    old = selected;
     p = m_input.keys;
 
 #ifdef HW_RVL
     if (Shutdown)
     {
-			gxTextureClose(&button_digit_data.texture[0]);
-			gxTextureClose(&button_digit_data.texture[1]);
+      gxTextureClose(&window);
+      gxTextureClose(&top);
+      gxTextureClose(&button_digit_data.texture[0]);
+      gxTextureClose(&button_digit_data.texture[1]);
       gxTextureClose(&w_pointer);
       GUI_DeleteMenu(parent);
       GUI_FadeOut();
@@ -246,15 +282,15 @@ void KeyboardMenu(gui_menu *parent, char *string, size_t size)
       selected = -1;
       for (i = 0; i < NUM_KEYBOARD_KEYS; i++)
       {
-				button = &buttons_keyboard[i];
-				if ((button->state & BUTTON_ACTIVE) && (button->state & BUTTON_VISIBLE))
-				{
-					if((x>=button->x)&&(x<=(button->x+button->w))&&(y>=button->y)&&(y<=(button->y+button->h)))
-					{
-						selected = i;
-						break;
-					}
-				}
+        button = &buttons_keyboard[i];
+        if ((button->state & BUTTON_ACTIVE) && (button->state & BUTTON_VISIBLE))
+        {
+          if((x>=button->x)&&(x<=(button->x+button->w))&&(y>=button->y)&&(y<=(button->y+button->h)))
+          {
+            selected = i;
+            break;
+          }
+        }
       }
     }
     else
@@ -269,7 +305,7 @@ void KeyboardMenu(gui_menu *parent, char *string, size_t size)
     gxSetScreen();
 
     /* update selection */
-		// TODO: allow the user to navigate keyboard with pad
+    // TODO: allow the user to navigate keyboard with pad
     if (p & PAD_BUTTON_UP)
     {
     }
@@ -283,7 +319,7 @@ void KeyboardMenu(gui_menu *parent, char *string, size_t size)
       if (selected >= 0)
       {
         ASND_SetVoice(ASND_GetFirstUnusedVoice(),VOICE_MONO_16BIT,22050,0,(u8 *)button_over_pcm,button_over_pcm_size,
-                      ((int)config.sfx_volume * 255) / 100,((int)config.sfx_volume * 255) / 100,NULL);
+            ((int)config.sfx_volume * 255) / 100,((int)config.sfx_volume * 255) / 100,NULL);
       }
     }
 
@@ -291,7 +327,9 @@ void KeyboardMenu(gui_menu *parent, char *string, size_t size)
     {
       if (selected >= 0)
       {
-				// TODO: add a character
+        // TODO: check for backspace etc.
+        /* add a character */
+        snprintf(string, size, "%s%c", name, items_keyboard[selected].text[0]);
       }
     }
     else if (p & PAD_BUTTON_B)
@@ -300,11 +338,34 @@ void KeyboardMenu(gui_menu *parent, char *string, size_t size)
     }
   }
 
-	// TODO: slide out
+  /* slide out */
+  yoffset = 0;
+  while (yoffset > -(ywindow + window->height))
+  {
+    /* draw parent menu */
+    GUI_DrawMenu(parent);
+
+    /* draw window */
+    gxDrawTexture(window,xwindow,ywindow+yoffset,window->width,window->height,225);
+    gxDrawTexture(top,xwindow,ywindow+yoffset,top->width,top->height,255);
+
+    /* display title */
+    FONT_writeCenter(title,20,xwindow,xwindow+window->width,ywindow+(top->height-20)/2+20+yoffset,(GXColor)WHITE);
+
+//    drawKeyboard(selected, xoffset, yoffset);
+
+    /* update display */
+    gxSetScreen();
+
+    /* slide speed */
+    yoffset -= 60;
+  }
 
   /* close textures */
-	gxTextureClose(&button_digit_data.texture[0]);
-	gxTextureClose(&button_digit_data.texture[1]);
+  gxTextureClose(&window);
+  gxTextureClose(&top);
+  gxTextureClose(&button_digit_data.texture[0]);
+  gxTextureClose(&button_digit_data.texture[1]);
 }
 
 void keyboardmenu_cb(void)
