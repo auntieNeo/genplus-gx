@@ -23,6 +23,9 @@ extern const u8 Key_R_gcn_png[];
 #endif
 extern const u8 Key_DPAD_png[];
 
+extern const u8 Button_mod_key_png[];
+extern const u8 Button_mod_key_over_png[];
+
 /*****************************************************************************/
 /*  GUI Buttons data                                                         */
 /*****************************************************************************/
@@ -30,6 +33,12 @@ static butn_data button_digit_data =
 {
   {NULL,NULL},
   {Button_digit_png,Button_digit_over_png}
+};
+
+static butn_data button_mod_key_data =
+{
+  {NULL,NULL},
+  {Button_mod_key_png,Button_mod_key_over_png}
 };
 
 /*****************************************************************************/
@@ -60,7 +69,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,"8",      "Add Character",    392,150, 40, 40},
   {NULL,NULL,"9",      "Add Character",    438,150, 40, 40},
   {NULL,NULL,"0",      "Add Character",    484,150, 40, 40},
-  {NULL,NULL,"Back",   "Remove Character", 530,150, 40, 40},
+  {NULL,NULL,"Back",   "Remove Character", 530,150, 80, 40},
   {NULL,NULL,"q",      "Add Character",     82,196, 40, 40},
   {NULL,NULL,"w",      "Add Character",    128,196, 40, 40},
   {NULL,NULL,"e",      "Add Character",    174,196, 40, 40},
@@ -72,7 +81,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,"o",      "Add Character",    450,196, 40, 40},
   {NULL,NULL,"p",      "Add Character",    496,196, 40, 40},
   {NULL,NULL,"-",      "Add Character",    542,196, 40, 40},
-  {NULL,NULL,"Caps",   "Caps Lock",         48,242, 40, 40},
+  {NULL,NULL,"Caps",   "Caps Lock",          8,242, 80, 40},
   {NULL,NULL,"a",      "Add Character",     94,242, 40, 40},
   {NULL,NULL,"s",      "Add Character",    140,242, 40, 40},
   {NULL,NULL,"d",      "Add Character",    186,242, 40, 40},
@@ -84,7 +93,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,"l",      "Add Character",    462,242, 40, 40},
   {NULL,NULL,";",      "Add Character",    508,242, 40, 40},
   {NULL,NULL,"'",      "Add Character",    554,242, 40, 40},
-  {NULL,NULL,"Shift",  "Shift",             60,288, 40, 40},
+  {NULL,NULL,"Shift",  "Shift",             20,288, 80, 40},
   {NULL,NULL,"z",      "Add Character",    106,288, 40, 40},
   {NULL,NULL,"x",      "Add Character",    152,288, 40, 40},
   {NULL,NULL,"c",      "Add Character",    198,288, 40, 40},
@@ -112,7 +121,7 @@ static gui_butn buttons_keyboard[NUM_KEYBOARD_KEYS] =
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},392,150, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},438,150, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},484,150, 40, 40},
-  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},530,150, 40, 40},
+  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},530,150, 80, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1}, 82,196, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},128,196, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},174,196, 40, 40},
@@ -124,7 +133,7 @@ static gui_butn buttons_keyboard[NUM_KEYBOARD_KEYS] =
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},450,196, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},496,196, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},542,196, 40, 40},
-  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1}, 48,242, 40, 40},
+  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},  8,242, 80, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1}, 94,242, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},140,242, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},186,242, 40, 40},
@@ -136,7 +145,7 @@ static gui_butn buttons_keyboard[NUM_KEYBOARD_KEYS] =
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},462,242, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},508,242, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},554,242, 40, 40},
-  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1}, 60,288, 40, 40},
+  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1}, 20,288, 80, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},106,288, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},152,288, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},198,288, 40, 40},
@@ -211,6 +220,8 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
   top = gxTextureOpenPNG(Frame_s2_title_png,0);
   button_digit_data.texture[0] = gxTextureOpenPNG(button_digit_data.image[0],0);
   button_digit_data.texture[1] = gxTextureOpenPNG(button_digit_data.image[1],0);
+  button_mod_key_data.texture[0] = gxTextureOpenPNG(button_mod_key_data.image[0],0);
+  button_mod_key_data.texture[1] = gxTextureOpenPNG(button_mod_key_data.image[1],0);
 
   /* initilize title*/
   snprintf(title, MAXPATHLEN, "%s: %s", name, string);
@@ -263,6 +274,8 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
       gxTextureClose(&top);
       gxTextureClose(&button_digit_data.texture[0]);
       gxTextureClose(&button_digit_data.texture[1]);
+      gxTextureClose(&button_mod_key_data.texture[0]);
+      gxTextureClose(&button_mod_key_data.texture[1]);
       gxTextureClose(&w_pointer);
       GUI_DeleteMenu(parent);
       GUI_FadeOut();
@@ -366,6 +379,8 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size,
   gxTextureClose(&top);
   gxTextureClose(&button_digit_data.texture[0]);
   gxTextureClose(&button_digit_data.texture[1]);
+  gxTextureClose(&button_mod_key_data.texture[0]);
+  gxTextureClose(&button_mod_key_data.texture[1]);
 }
 
 void keyboardmenu_cb(void)
