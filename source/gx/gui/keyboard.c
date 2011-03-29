@@ -218,7 +218,96 @@ void drawKeyboard(int selected, int xOffset, int yOffset)
 
 void shift_keyboard(void)
 {
-  // TODO
+  if(items_keyboard[11].text[0] == 'q')
+  {
+    items_keyboard[0].text[0] = '!';
+    items_keyboard[1].text[0] = '@';
+    items_keyboard[2].text[0] = '#';
+    items_keyboard[3].text[0] = '$';
+    items_keyboard[4].text[0] = '%';
+    items_keyboard[5].text[0] = '^';
+    items_keyboard[6].text[0] = '&';
+    items_keyboard[7].text[0] = '*';
+    items_keyboard[8].text[0] = '(';
+    items_keyboard[9].text[0] = ')';
+    items_keyboard[11].text[0] = 'Q';
+    items_keyboard[12].text[0] = 'W';
+    items_keyboard[13].text[0] = 'E';
+    items_keyboard[14].text[0] = 'R';
+    items_keyboard[15].text[0] = 'T';
+    items_keyboard[16].text[0] = 'Y';
+    items_keyboard[17].text[0] = 'U';
+    items_keyboard[18].text[0] = 'I';
+    items_keyboard[19].text[0] = 'O';
+    items_keyboard[20].text[0] = 'P';
+    items_keyboard[21].text[0] = '_';
+    items_keyboard[23].text[0] = 'A';
+    items_keyboard[24].text[0] = 'S';
+    items_keyboard[25].text[0] = 'D';
+    items_keyboard[26].text[0] = 'F';
+    items_keyboard[27].text[0] = 'G';
+    items_keyboard[28].text[0] = 'H';
+    items_keyboard[29].text[0] = 'J';
+    items_keyboard[30].text[0] = 'K';
+    items_keyboard[31].text[0] = 'L';
+    items_keyboard[32].text[0] = ':';
+    items_keyboard[33].text[0] = '"';
+    items_keyboard[35].text[0] = 'Z';
+    items_keyboard[36].text[0] = 'X';
+    items_keyboard[37].text[0] = 'C';
+    items_keyboard[38].text[0] = 'V';
+    items_keyboard[39].text[0] = 'B';
+    items_keyboard[40].text[0] = 'N';
+    items_keyboard[41].text[0] = 'M';
+    items_keyboard[42].text[0] = '<';
+    items_keyboard[43].text[0] = '>';
+    items_keyboard[44].text[0] = '?';
+  }
+  else if(items_keyboard[11].text[0] == 'Q')
+  {
+    items_keyboard[0].text[0] = '1';
+    items_keyboard[1].text[0] = '2';
+    items_keyboard[2].text[0] = '3';
+    items_keyboard[3].text[0] = '4';
+    items_keyboard[4].text[0] = '5';
+    items_keyboard[5].text[0] = '6';
+    items_keyboard[6].text[0] = '7';
+    items_keyboard[7].text[0] = '8';
+    items_keyboard[8].text[0] = '9';
+    items_keyboard[9].text[0] = '0';
+    items_keyboard[11].text[0] = 'q';
+    items_keyboard[12].text[0] = 'w';
+    items_keyboard[13].text[0] = 'e';
+    items_keyboard[14].text[0] = 'r';
+    items_keyboard[15].text[0] = 't';
+    items_keyboard[16].text[0] = 'y';
+    items_keyboard[17].text[0] = 'u';
+    items_keyboard[18].text[0] = 'i';
+    items_keyboard[19].text[0] = 'o';
+    items_keyboard[20].text[0] = 'p';
+    items_keyboard[21].text[0] = '-';
+    items_keyboard[23].text[0] = 'a';
+    items_keyboard[24].text[0] = 's';
+    items_keyboard[25].text[0] = 'd';
+    items_keyboard[26].text[0] = 'f';
+    items_keyboard[27].text[0] = 'g';
+    items_keyboard[28].text[0] = 'h';
+    items_keyboard[29].text[0] = 'j';
+    items_keyboard[30].text[0] = 'k';
+    items_keyboard[31].text[0] = 'l';
+    items_keyboard[32].text[0] = ';';
+    items_keyboard[33].text[0] = '\'';
+    items_keyboard[35].text[0] = 'z';
+    items_keyboard[36].text[0] = 'x';
+    items_keyboard[37].text[0] = 'c';
+    items_keyboard[38].text[0] = 'v';
+    items_keyboard[39].text[0] = 'b';
+    items_keyboard[40].text[0] = 'n';
+    items_keyboard[41].text[0] = 'm';
+    items_keyboard[42].text[0] = ',';
+    items_keyboard[43].text[0] = '.';
+    items_keyboard[44].text[0] = '/';
+  }
 }
 
 void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
@@ -302,7 +391,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
     gxDrawTexture(top,xwindow,ywindow,top->width,top->height,255);
 
     /* update title */
-    snprintf(title, MAXPATHLEN, "%d %s: %s", selected, name, string);
+    snprintf(title, MAXPATHLEN, "%s: %s", name, string);
 
     /* display title */
     FONT_writeCenter(title,20,xwindow,xwindow+window->width,ywindow+(top->height-20)/2+20,(GXColor)WHITE);
@@ -508,8 +597,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
             shiftlock = 0;
           }
           shift_keyboard();
-          capslock = 1;
-
+          capslock = !capslock;
         }
         else if(selected == 34)  // Shift
         {

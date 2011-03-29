@@ -2443,42 +2443,6 @@ static void netmenu(void)
   gui_item *items = m->items;
 	char buffer[MAXPATHLEN];
 
-	/*
-  if (config.region_detect == 0)
-    sprintf (items[0].text, "Console Region: AUTO");
-  else if (config.region_detect == 1)
-    sprintf (items[0].text, "Console Region: USA");
-  else if (config.region_detect == 2)
-    sprintf (items[0].text, "Console Region: EUR");
-  else if (config.region_detect == 3)
-    sprintf (items[0].text, "Console Region: JAPAN");
-
-  sprintf (items[1].text, "System Lockups: %s", config.force_dtack ? "OFF" : "ON");
-  sprintf (items[2].text, "68k Address Error: %s", config.addr_error ? "ON" : "OFF");
-  sprintf (items[3].text, "System TMSS: %s", (config.tmss & 1) ? "ON":"OFF");
-
-  if (config.lock_on == TYPE_GG)
-    sprintf (items[4].text, "Lock-On: GAME GENIE");
-  else if (config.lock_on == TYPE_AR)
-    sprintf (items[4].text, "Lock-On: ACTION REPLAY");
-  else if (config.lock_on == TYPE_SK)
-    sprintf (items[4].text, "Lock-On: SONIC&KNUCKLES");
-  else
-    sprintf (items[4].text, "Lock-On: OFF");
-
-  sprintf (items[5].text, "Cartridge Swap: %s", config.hot_swap ? "ON":"OFF");
-
-  if (svp)
-  {
-    sprintf (items[6].text, "SVP Cycles: %d", SVP_cycles);
-    m->max_items = 7;
-  }
-  else
-  {
-    m->max_items = 6;
-  }
-		*/
-
 	sprintf (items[0].text, "Share IP: %s", config.share_ip);
 	sprintf (items[1].text, "Share Name: %s", config.share_name);
 	sprintf (items[2].text, "Username: %s", config.share_username);
