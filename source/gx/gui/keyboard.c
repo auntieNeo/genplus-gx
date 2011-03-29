@@ -266,9 +266,6 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
     gxDrawTexture(window,xwindow,ywindow+yoffset,window->width,window->height,225);
     gxDrawTexture(top,xwindow,ywindow+yoffset,top->width,top->height,255);
 
-    /* update title */
-    snprintf(title, MAXPATHLEN, "%s: %s", name, string);
-
     /* display title */
     FONT_writeCenter(title,20,xwindow,xwindow+window->width,ywindow+(top->height-20)/2+20+yoffset,(GXColor)WHITE);
 
@@ -289,6 +286,9 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
     /* draw window */
     gxDrawTexture(window,xwindow,ywindow,window->width,window->height,225);
     gxDrawTexture(top,xwindow,ywindow,top->width,top->height,255);
+
+    /* update title */
+    snprintf(title, MAXPATHLEN, "%d %s: %s", selected, name, string);
 
     /* display title */
     FONT_writeCenter(title,20,xwindow,xwindow+window->width,ywindow+(top->height-20)/2+20,(GXColor)WHITE);
@@ -382,14 +382,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
             // do nothing
             break;
           case 2:
-            if(selected == 21)  // -
-            {
-              selected = 9;  // 0
-            }
-            else
-            {
-              selected -= 10;
-            }
+            selected -= 11;
             break;
           case 3:
             if(selected == 22)  // Caps Lock
@@ -411,7 +404,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
         switch(currentRow)
         {
           case 1:
-            selected += 10;
+            selected += 11;
             break;
           case 2:
             selected += 12;
@@ -477,7 +470,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
         if(selected == 10)  // Backspace
         {
           /* remove a character */
-          i = strlen(string) - 1;
+          i = strlen(string);
           if(i != 0)
           {
             string[i - 1] = '\0';
@@ -512,7 +505,7 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
         else
         {
           /* add a character */
-          snprintf(string, size, "%s%c", name, items_keyboard[selected].text[0]);
+          snprintf(string, size, "%s%c", string, items_keyboard[selected].text[0]);
           if(shiftlock)
           {
             shift_keyboard();
