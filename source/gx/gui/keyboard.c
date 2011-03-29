@@ -10,13 +10,14 @@
 #define BG_COLOR_1 {0x49,0x49,0x49,0xff}
 #define BG_COLOR_2 {0x66,0x66,0x66,0xff}
 
-#define NUM_KEYBOARD_KEYS 45
+#define NUM_KEYBOARD_KEYS 46
 #define KEYBOARD_X_POS 50
 #define KEYBOARD_Y_POS 150
 #define KEYBOARD_ROW_1 0
 #define KEYBOARD_ROW_2 KEYBOARD_ROW_1 + 11
 #define KEYBOARD_ROW_3 KEYBOARD_ROW_2 + 11
 #define KEYBOARD_ROW_4 KEYBOARD_ROW_3 + 12
+#define KEYBOARD_ROW_5 KEYBOARD_ROW_4 + 11
 
 #ifdef HW_RVL
 extern const u8 Key_Minus_wii_png[];
@@ -110,6 +111,7 @@ static gui_item items_keyboard[NUM_KEYBOARD_KEYS] =
   {NULL,NULL,",",      "Add Character",    418,198, 40, 40},
   {NULL,NULL,".",      "Add Character",    464,198, 40, 40},
   {NULL,NULL,"/",      "Add Character",    510,198, 40, 40},
+  {NULL,NULL," ",      "Add Space",        200,244,200, 40},
 };
 
 /*****************************************************************************/
@@ -162,6 +164,7 @@ static gui_butn buttons_keyboard[NUM_KEYBOARD_KEYS] =
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},418,198, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},464,198, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},510,198, 40, 40},
+  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},200,244,200, 40},
 };
 
 void drawKeyboard(int selected, int xOffset, int yOffset)
@@ -372,8 +375,10 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
         currentRow = 2;
       else if (selected < KEYBOARD_ROW_4)
         currentRow = 3;
-      else
+      else if (selected < KEYBOARD_ROW_5)
         currentRow = 4;
+      else
+        currentRow = 5;
       if (p & PAD_BUTTON_UP)
       {
         switch(currentRow)
@@ -396,6 +401,9 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
             break;
           case 4:
             selected -= 12;
+            break;
+          case 5:  // spacebar
+            selected = 39;  // b
             break;
         }
       }
@@ -420,7 +428,9 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
             }
             break;
           case 4:
-            // TODO: move to spacebar
+            selected = 45;  // spacebar
+          case 5:
+            // do nothing
             break;
         }
       }
