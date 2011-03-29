@@ -2429,6 +2429,7 @@ static void ctrlmenu(void)
 int isValidIp(const char *ip)
 {
 	int i, j, k;
+	return 1;
 	i = 0;
 	for(j = 0; j < 4; j++)
 	{
