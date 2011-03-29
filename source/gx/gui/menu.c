@@ -2472,7 +2472,7 @@ static void netmenu(void)
 	sprintf (items[0].text, "Share IP: %s", config.share_ip);
 	sprintf (items[1].text, "Share Name: %s", config.share_name);
 	sprintf (items[2].text, "Username: %s", config.share_username);
-	sprintf (items[3].text, "Password: %s", config.share_password);
+	sprintf (items[3].text, "Password: ****");
 
   GUI_InitMenu(m);
   GUI_SlideMenuTitle(m,strlen("Network "));
@@ -2515,7 +2515,6 @@ static void netmenu(void)
 				strcpy(buffer, config.share_password);
 				KeyboardMenu(m, "Password", buffer, MAXPATHLEN);
 				strcpy(config.share_password, buffer);
-				sprintf (items[3].text, "Password: %s", config.share_password);
 				break;
 
       case -1:
