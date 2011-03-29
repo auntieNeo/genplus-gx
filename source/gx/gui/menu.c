@@ -2515,6 +2515,10 @@ static void netmenu(void)
 				strcpy(buffer, config.share_password);
 				KeyboardMenu(m, "Password", buffer, MAXPATHLEN);
 				strcpy(config.share_password, buffer);
+				if(strlen(buffer))
+					sprintf (items[3].text, "Password: ****");
+				else
+					sprintf (items[3].text, "Password: ");
 				break;
 
       case -1:
