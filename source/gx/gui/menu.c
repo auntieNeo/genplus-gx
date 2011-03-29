@@ -2426,8 +2426,33 @@ static void ctrlmenu(void)
 #endif
 }
 
-int validateIp(const char *ip)
+int isValidIp(const char *ip)
 {
+	int i, j, k;
+	i = 0;
+	for(j = 0; j < 4; j++)
+	{
+		for(k = 0; k < 3; k++)
+		{
+			if(ip[i] == '.')
+			{
+				if(k == 0)
+					return 0;
+				else
+					break;
+			}
+			if((ip[i] < '0') && (ip[i] > '9'))
+			{
+				return 0;
+			}
+			i++;
+		}
+		if(ip[i] != '.')
+			return 0;
+		else if(j == 3)
+			return 0;
+		i++;
+	}
 	return 1;
 }
 
@@ -2460,21 +2485,36 @@ static void netmenu(void)
       case 0:  /*** Share IP ***/
 				strcpy(buffer, config.share_ip);
 				KeyboardMenu(m, "Share IP", buffer, MAXPATHLEN);
+				if(!isValidIp(buffer))
+				{
+					GUI_WaitPrompt("Error", "Invalid IP address");
+				}
+				else
+				{
+					strcpy(config.share_ip, buffer);
+				}
+				sprintf (items[0].text, "Share IP: %s", config.share_ip);
 				break;
 
       case 1:  /*** Share Name ***/
 				strcpy(buffer, config.share_name);
 				KeyboardMenu(m, "Share Name", buffer, MAXPATHLEN);
+				strcpy(config.share_name, buffer);
+				sprintf (items[1].text, "Share Name: %s", config.share_name);
 				break;
 
       case 2:  /*** Username ***/
 				strcpy(buffer, config.share_username);
 				KeyboardMenu(m, "Username", buffer, MAXPATHLEN);
+				strcpy(config.share_username, buffer);
+				sprintf (items[2].text, "Username: %s", config.share_username);
 				break;
 
       case 3:  /*** Password ***/
 				strcpy(buffer, config.share_password);
 				KeyboardMenu(m, "Password", buffer, MAXPATHLEN);
+				strcpy(config.share_password, buffer);
+				sprintf (items[3].text, "Password: %s", config.share_password);
 				break;
 
       case -1:
