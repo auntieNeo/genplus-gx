@@ -30,6 +30,9 @@ extern const u8 Key_DPAD_png[];
 
 extern const u8 Button_mod_key_png[];
 extern const u8 Button_mod_key_over_png[];
+extern const u8 Button_spacebar_png[];
+extern const u8 Button_spacebar_over_png[];
+extern const u8 Button_mod_key_over_png[];
 extern const u8 Frame_keyboard_png[];
 extern const u8 Frame_keyboard_title_png[];
 
@@ -46,6 +49,12 @@ static butn_data button_mod_key_data =
 {
   {NULL,NULL},
   {Button_mod_key_png,Button_mod_key_over_png}
+};
+
+static butn_data button_spacebar_data =
+{
+  {NULL,NULL},
+  {Button_spacebar_png,Button_spacebar_over_png}
 };
 
 /*****************************************************************************/
@@ -164,7 +173,7 @@ static gui_butn buttons_keyboard[NUM_KEYBOARD_KEYS] =
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},418,198, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},464,198, 40, 40},
   {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},510,198, 40, 40},
-  {&button_digit_data  ,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},200,244,200, 40},
+  {&button_spacebar_data,BUTTON_VISIBLE|BUTTON_ACTIVE|BUTTON_OVER_SFX,{4,4,1,1},200,244,200, 40},
 };
 
 void drawKeyboard(int selected, int xOffset, int yOffset)
@@ -252,6 +261,8 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
   button_digit_data.texture[1] = gxTextureOpenPNG(button_digit_data.image[1],0);
   button_mod_key_data.texture[0] = gxTextureOpenPNG(button_mod_key_data.image[0],0);
   button_mod_key_data.texture[1] = gxTextureOpenPNG(button_mod_key_data.image[1],0);
+  button_spacebar_data.texture[0] = gxTextureOpenPNG(button_spacebar_data.image[0],0);
+  button_spacebar_data.texture[1] = gxTextureOpenPNG(button_spacebar_data.image[1],0);
   action_done.texture = gxTextureOpenPNG(action_done.data,0);
   action_select.texture = gxTextureOpenPNG(action_select.data,0);
 
@@ -323,6 +334,8 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
       gxTextureClose(&button_digit_data.texture[1]);
       gxTextureClose(&button_mod_key_data.texture[0]);
       gxTextureClose(&button_mod_key_data.texture[1]);
+      gxTextureClose(&button_spacebar_data.texture[0]);
+      gxTextureClose(&button_spacebar_data.texture[1]);
       gxTextureClose(&action_done.texture);
       gxTextureClose(&action_select.texture);
       gxTextureClose(&w_pointer);
@@ -570,4 +583,6 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
   gxTextureClose(&button_digit_data.texture[1]);
   gxTextureClose(&button_mod_key_data.texture[0]);
   gxTextureClose(&button_mod_key_data.texture[1]);
+  gxTextureClose(&button_spacebar_data.texture[0]);
+  gxTextureClose(&button_spacebar_data.texture[1]);
 }
