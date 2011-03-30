@@ -331,6 +331,12 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
   int xwindow = 20;
   int ywindow = 90;
 
+  /* change the keys to lowercase */
+  if(items_keyboard[11].text[0] == 'Q')
+  {
+    shift_keyboard();
+  }
+
   /* disable helper comments */
   if (parent->helpers[0])
   {
