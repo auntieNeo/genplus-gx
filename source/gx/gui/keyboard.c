@@ -411,6 +411,9 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
       FONT_alignRight(action_select.comment,16,action_select.x-6,action_select.y+(action_select.h-16)/2+16,(GXColor)WHITE);
     }
 
+    /* update screen */
+    gxSetScreen();
+
     old = selected;
     p = m_input.keys;
 
@@ -464,9 +467,6 @@ void KeyboardMenu(gui_menu *parent, const char *name, char *string, size_t size)
         selected = 0;
     }
 #endif
-
-    /* update screen */
-    gxSetScreen();
 
     /* allow user to navigate with directional pad */
     if (p & (PAD_BUTTON_UP | PAD_BUTTON_DOWN))
