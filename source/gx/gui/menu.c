@@ -296,7 +296,7 @@ static gui_item items_load[5] =
   {NULL,Load_sd_png    ,"","Load ROM files from SD card"    ,275,138,88,96},
   {NULL,Load_usb_png   ,"","Load ROM files from USB drive"  ,441,138,88,96},
   {NULL,Load_dvd_png   ,"","Load ROM files from DVD"        ,192,282,88,96},
-  {NULL,Load_smb_png   ,"","Load ROM files from SMB"        ,360,282,88,96}
+  {NULL,Load_smb_png   ,"","Load ROM files from SMB"        ,360,282,95,96}
 #else
   {NULL,Load_recent_png,"","Load recent ROM files (USB/SD)" ,110,192,88,96},
   {NULL,Load_sd_png    ,"","Load ROM files from SD card"    ,276,192,88,96},
